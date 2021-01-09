@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/textViewProdutoId"
+        android:layout_width="86dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="top"
+        android:background="@drawable/table_content_cell_bg"
+        android:text="12345"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textViewNomeProduto"
+        android:layout_width="165dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@drawable/table_content_cell_bg"
+        android:text="Produto 123"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textViewProdutoPeso"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="top"
+        android:background="@drawable/table_content_cell_bg"
+        android:text="66.99"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textViewRegistoHora"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="top"
+        android:background="@drawable/table_content_cell_bg"
+        android:text="66:66"
+        android:textAlignment="center"
+        android:textSize="24sp" />
+
+</LinearLayout>
