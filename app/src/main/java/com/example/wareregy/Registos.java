@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -25,7 +26,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Registos extends AppCompatActivity {
 
@@ -49,7 +52,6 @@ public class Registos extends AppCompatActivity {
 
         //initializing the productlist
         registoList = new ArrayList<>();
-
         //this method will fetch and parse json
         //to display it in recyclerview
 
@@ -91,7 +93,7 @@ public class Registos extends AppCompatActivity {
 
     private void loadRegistos(int user_id, String registo_data) {
         registoList.clear();
-         String URL_REGISTOS = "http://192.168.1.80/regyApi/Api.php?user_id="+ user_id + "&registo_data="+ registo_data ;
+         String URL_REGISTOS = "http://192.168.1.80:3000/registos" ;
         /*
          * Creating a String Request
          * The request type is GET defined by first parameter
@@ -121,7 +123,7 @@ public class Registos extends AppCompatActivity {
                                         registo.getDouble("produto_peso"),
                                         registo.getString("registo_hora")
                                 ));
-                                Log.d("RL", registoList.toString());
+
                             }
 
                             RegistoAdapter adapter = new RegistoAdapter(Registos.this, registoList);
@@ -130,13 +132,28 @@ public class Registos extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
+
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
                     }
-                });
+
+                }){
+
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                Log.d("RL", String.valueOf(user_id));
+                Log.d("RL", String.valueOf(registo_data));
+                params.put("user_id", String.valueOf(user_id));
+                params.put("registo_data", registo_data);
+                return params;
+            }
+            
+        }
+        ;
 
         //adding our stringrequest to queue
         Volley.newRequestQueue(this).add(stringRequest);
