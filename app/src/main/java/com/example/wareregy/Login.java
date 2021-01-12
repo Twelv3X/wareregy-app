@@ -71,22 +71,28 @@ public class Login extends AppCompatActivity {
         StringRequest sr = new StringRequest(Request.Method.POST,url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+
+
                try {
 
                    JSONObject obj = new JSONObject(response);
+                   Log.d("login", response.toString());
+                   if (!response.contains("Login Falhou")){
+                   Utilizador user = new Utilizador(
+                           obj.getInt("id"),
+                           obj.getString("nome"),
+                           obj.getString("email"),
+                           obj.getInt("exp")
+                   );
 
-                       Utilizador user = new Utilizador(
-                               obj.getInt("id"),
-                               obj.getString("nome"),
-                               obj.getString("email"),
-                               obj.getInt("exp")
-                       );
-
-                       //storing the user in shared preferences
-                       SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-                       finish();
-                       startActivity(new Intent(getApplicationContext(), Menu.class));
-
+                   //storing the user in shared preferences
+                   SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+                   finish();
+                   startActivity(new Intent(getApplicationContext(), Menu.class));
+               }else{
+                       Toast.makeText(getApplicationContext(),
+                               "Erro na Autenticação", Toast.LENGTH_SHORT).show();
+                   }
                    } catch(Exception e){
                        e.printStackTrace();
                    }
