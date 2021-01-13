@@ -4,13 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Menu extends AppCompatActivity {
-    TextView nome;
+    private TextView nome;
+    private Button scanBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,12 +29,25 @@ public class Menu extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+
+        scanBtn = (Button)findViewById(R.id.scanBtn);
+        scanBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openScanner();
+            }
+        });
     }
 
         public void launchRegistos (MenuItem item){
             Intent intent = new Intent(this, Registos.class);
             startActivity(intent);
         }
+
+    private void openScanner() {
+        Intent intent = new Intent(this, Scanner.class);
+        startActivity(intent);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
