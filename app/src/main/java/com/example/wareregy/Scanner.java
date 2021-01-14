@@ -4,11 +4,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
@@ -20,10 +29,23 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import org.json.JSONObject;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Scanner extends AppCompatActivity {
     CodeScanner codeScanner;
     CodeScannerView scannView;
     TextView resultData;
+    Utilizador user = SharedPrefManager.getInstance(this).getUser();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +59,41 @@ public class Scanner extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        int indexNome = result.getText().indexOf("Nome");
+                        String idString = result.getText().substring(0,indexNome);
+                        idString = idString.trim().replace("Id: ", "");
+                        int id = Integer.parseInt(idString);
+
+                        int indexPeso = result.getText().indexOf("Peso");
+                        String nome = result.getText().substring(indexNome,indexPeso);
+                        nome = nome.replace("Nome: ", "");
+
+                        int indexLoc = result.getText().indexOf("Localização");
+                        String pesoString = result.getText().substring(indexPeso,indexLoc);
+                        pesoString = pesoString.trim().replace("Peso: ", "");
+                        Double peso = Double.parseDouble(pesoString);
+
+                        int indexFim = result.getText().length();
+                        String loc = result.getText().substring(indexLoc,indexFim);
+                        loc = loc.trim().replace("Localização: ", "");
+
+                        DateTimeFormatter dFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                        LocalDate date = LocalDate.now();
+
+                        LocalDateTime tempo = LocalDateTime.now();
+                        long segundos = Duration.between(tempo.withSecond(0).withMinute(0).withHour(0), tempo).getSeconds();
+
                         resultData.setText(result.getText());
+                        Registo registo = new Registo();
+                        registo.setUserId(user.getId());
+                        registo.setProdutoId(id);
+                        registo.setProdutoNome(nome);
+                        registo.setProdutoPeso(peso);
+                        registo.setRegistoData(date.format(dFormatter).toString());
+                        registo.setRegistoHora(Math.toIntExact(segundos));
+
+                        Log.d("QR",registo.toJSON());
+                        enviarRegisto(registo);
                     }
                 });
 
@@ -51,8 +107,6 @@ public class Scanner extends AppCompatActivity {
             }
         });
     }
-
-
 
     @Override
     protected void onResume() {
@@ -78,6 +132,43 @@ public class Scanner extends AppCompatActivity {
             }
         }).check();
 
+    }
+
+    public void enviarRegisto(Registo registo) {
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://192.168.1.80:3000/enviarregisto";
+        StringRequest sr = new StringRequest(Request.Method.POST,url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+            Log.d("Res", response);
+            }
+
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            @Override
+            protected Map<String,String> getParams(){
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("user_id", String.valueOf(registo.getUserId()));
+                params.put("produto_id", String.valueOf(registo.getProdutoId()));
+                params.put("registo_data", registo.getRegistoData());
+                params.put("registo_hora", String.valueOf(registo.getRegistoHora()));
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("Content-Type","application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+        queue.add(sr);
     }
 
 

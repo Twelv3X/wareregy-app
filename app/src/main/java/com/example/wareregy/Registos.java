@@ -34,10 +34,10 @@ public class Registos extends AppCompatActivity {
 
     private TextView mDisplayDate;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
-    //a list to store all the products
+
     List<Registo> registoList;
 
-    //the recyclerview
+
     RecyclerView recyclerView;
 
     @Override
@@ -48,7 +48,7 @@ public class Registos extends AppCompatActivity {
         recyclerView = findViewById(R.id.registoView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//creating adapter object and setting it to recyclerview
+        //creating adapter object and setting it to recyclerview
 
         //initializing the productlist
         registoList = new ArrayList<>();
@@ -56,7 +56,7 @@ public class Registos extends AppCompatActivity {
         //to display it in recyclerview
 
 
-        //Datepicker
+
         mDisplayDate = (TextView) findViewById(R.id.tvDate);
 
         mDisplayDate.setOnClickListener(new View.OnClickListener() {
@@ -93,16 +93,7 @@ public class Registos extends AppCompatActivity {
 
     private void loadRegistos(int user_id, String registo_data) {
         registoList.clear();
-         String URL_REGISTOS = "http://192.168.1.80:3000/registos" ;
-        /*
-         * Creating a String Request
-         * The request type is GET defined by first parameter
-         * The URL is defined in the second parameter
-         * Then we have a Response Listener and a Error Listener
-         * In response listener we will get the JSON response as a String
-         * */
-
-
+        String URL_REGISTOS = "http://192.168.1.80:3000/registos" ;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_REGISTOS,
                 new Response.Listener<String>() {
                     @Override
@@ -118,10 +109,12 @@ public class Registos extends AppCompatActivity {
                                 JSONObject registo = array.getJSONObject(i);
                                 //adding the product to product list
                                 registoList.add(new Registo(
+                                        registo.getInt("user_id"),
                                         registo.getInt("produto_id"),
                                         registo.getString("produto_nome"),
                                         registo.getDouble("produto_peso"),
-                                        registo.getString("registo_hora")
+                                        registo.getString("registo_data"),
+                                        registo.getInt("registo_hora")
                                 ));
 
                             }

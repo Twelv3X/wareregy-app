@@ -42,7 +42,7 @@ public class RegistoAdapter extends RecyclerView.Adapter<RegistoAdapter.RegistoV
         holder.textViewProdutoId.setText(String.valueOf(registo.getProdutoId()));
         holder.textViewNomeProduto.setText(registo.getProdutoNome());
         holder.textViewProdutoPeso.setText(String.valueOf(registo.getProdutoPeso()));
-        holder.textViewRegistoHora.setText(String.valueOf(registo.getRegistoHora()));
+        holder.textViewRegistoHora.setText(String.valueOf(segundosParaHm(registo.getRegistoHora())));
         if (position%2 == 0) {
             holder.textViewProdutoId.setBackgroundColor(Color.WHITE);
             holder.textViewNomeProduto.setBackgroundColor(Color.WHITE);
@@ -58,7 +58,13 @@ else
             }
         }
 
+    private String segundosParaHm (int segundos){
+        int h = segundos / 3600;
+        int m = (segundos % 3600) / 60;
 
+        String hm = String.format("%02d:%02d", h, m);
+        return hm;
+    }
 
     @Override
     public int getItemCount() {

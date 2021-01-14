@@ -72,7 +72,6 @@ public class Login extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
 
-
                try {
 
                    JSONObject obj = new JSONObject(response);
@@ -82,6 +81,7 @@ public class Login extends AppCompatActivity {
                            obj.getInt("id"),
                            obj.getString("nome"),
                            obj.getString("email"),
+                           obj.getInt("login"),
                            obj.getInt("exp")
                    );
 

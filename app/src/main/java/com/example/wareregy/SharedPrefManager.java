@@ -8,6 +8,7 @@ public class SharedPrefManager {
     private static final String SHARED_PREF_NAME = "volleylogin";
     private static final String KEY_USERNAME = "keyusername";
     private static final String KEY_EMAIL = "keyemail";
+    private static final String KEY_PLOGIN = "plogin";
     private static final String KEY_EXP = "keyexp";
     private static final String KEY_ID = "keyid";
     private static SharedPrefManager mInstance;
@@ -30,6 +31,7 @@ public class SharedPrefManager {
         editor.putInt(KEY_ID, user.getId());
         editor.putString(KEY_USERNAME, user.getNome());
         editor.putString(KEY_EMAIL, user.getEmail());
+        editor.putInt(KEY_PLOGIN, user.getPrimeiroLogin());
         editor.putInt(KEY_EXP, user.getExp());
         editor.apply();
     }
@@ -47,6 +49,7 @@ public class SharedPrefManager {
                 sharedPreferences.getInt(KEY_ID, -1),
                 sharedPreferences.getString(KEY_USERNAME, null),
                 sharedPreferences.getString(KEY_EMAIL, null),
+                sharedPreferences.getInt(KEY_PLOGIN, 0),
                 sharedPreferences.getInt(KEY_EXP, 0)
         );
     }
