@@ -11,6 +11,10 @@ public class SharedPrefManager {
     private static final String KEY_PLOGIN = "plogin";
     private static final String KEY_EXP = "keyexp";
     private static final String KEY_ID = "keyid";
+    private static final String KEY_NIVEL = "keynivel";
+    private static final String KEY_MINXP = "keyminxp";
+    private static final String KEY_MAXXP = "keymaxxp";
+
     private static SharedPrefManager mInstance;
     private static Context ctx;
 
@@ -33,6 +37,9 @@ public class SharedPrefManager {
         editor.putString(KEY_EMAIL, user.getEmail());
         editor.putInt(KEY_PLOGIN, user.getPrimeiroLogin());
         editor.putInt(KEY_EXP, user.getExp());
+        editor.putInt(KEY_NIVEL, user.getNivel());
+        editor.putInt(KEY_MINXP, user.getMinXp());
+        editor.putInt(KEY_MAXXP, user.getMaxXp());
         editor.apply();
     }
 
@@ -50,7 +57,10 @@ public class SharedPrefManager {
                 sharedPreferences.getString(KEY_USERNAME, null),
                 sharedPreferences.getString(KEY_EMAIL, null),
                 sharedPreferences.getInt(KEY_PLOGIN, 0),
-                sharedPreferences.getInt(KEY_EXP, 0)
+                sharedPreferences.getInt(KEY_EXP, 0),
+                sharedPreferences.getInt(KEY_NIVEL, 0),
+                sharedPreferences.getInt(KEY_MINXP, 0),
+                sharedPreferences.getInt(KEY_MAXXP, 0)
         );
     }
 

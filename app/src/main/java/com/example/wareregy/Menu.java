@@ -2,10 +2,12 @@ package com.example.wareregy;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
@@ -13,7 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Menu extends AppCompatActivity {
     private TextView nome;
+    private TextView exp;
+    private TextView nivel;
     private Button scanBtn;
+    private ProgressBar pBar;
+    private TextView timer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,12 +30,37 @@ public class Menu extends AppCompatActivity {
         if (SharedPrefManager.getInstance(this).isLoggedIn()) {
             Utilizador user = SharedPrefManager.getInstance(this).getUser();
             nome = findViewById(R.id.textNome);
+            exp = findViewById(R.id.exp);
+            nivel = findViewById(R.id.nivel);
+            pBar = findViewById(R.id.progressBar);
             nome.setText(user.getNome());
+
+            String expLabel = user.getExp() + "/" + user.getMaxXp();
+            exp.setText(expLabel);
+
+            String nivelLabel = "Lv. " + String.valueOf(user.getNivel());
+            nivel.setText(nivelLabel);
+
+            pBar.setMin(user.getMinXp());
+            pBar.setMax(user.getMaxXp());
+            pBar.setProgress(user.getExp());
         } else {
             Intent intent = new Intent(Menu.this, Login.class);
             startActivity(intent);
             finish();
         }
+        timer = findViewById(R.id.timer);
+        new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                timer.setText(millisUntilFinished / 1000 + "s");
+            }
+
+            public void onFinish() {
+                timer.setText("0");
+            }
+        }.start();
+
 
         scanBtn = (Button)findViewById(R.id.scanBtn);
         scanBtn.setOnClickListener(new View.OnClickListener() {

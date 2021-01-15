@@ -82,7 +82,10 @@ public class Login extends AppCompatActivity {
                            obj.getString("nome"),
                            obj.getString("email"),
                            obj.getInt("login"),
-                           obj.getInt("exp")
+                           obj.getInt("exp"),
+                           obj.getInt("nivel"),
+                           obj.getInt("minxp"),
+                           obj.getInt("maxxp")
                    );
 
                    //storing the user in shared preferences
