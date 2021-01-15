@@ -14,6 +14,8 @@ public class SharedPrefManager {
     private static final String KEY_NIVEL = "keynivel";
     private static final String KEY_MINXP = "keyminxp";
     private static final String KEY_MAXXP = "keymaxxp";
+    private static boolean KEY_TESTE = false;
+
 
     private static SharedPrefManager mInstance;
     private static Context ctx;
@@ -71,5 +73,6 @@ public class SharedPrefManager {
         editor.clear();
         editor.apply();
         ctx.startActivity(new Intent(ctx, Login.class));
+        KEY_TESTE = true;
     }
 }
