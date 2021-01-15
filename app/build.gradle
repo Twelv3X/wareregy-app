@@ -56,4 +56,7 @@ dependencies {
     implementation 'com.budiyev.android:code-scanner:2.1.0'
     implementation 'com.karumi:dexter:6.0.0'
 
+    //Biometric
+    implementation "androidx.biometric:biometric:1.0.1"
+
 }

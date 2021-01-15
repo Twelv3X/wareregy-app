@@ -1,7 +1,14 @@
 package com.example.wareregy;
 
+import android.Manifest;
+import android.app.KeyguardManager;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.hardware.biometrics.BiometricPrompt;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -9,7 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -53,6 +62,112 @@ public class Login extends AppCompatActivity {
         });
     }
 
+    private Boolean checkBiometricSupport()
+    {
+
+        KeyguardManager keyguardManager =
+                (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+
+        PackageManager packageManager = this.getPackageManager();
+
+        if (!keyguardManager.isKeyguardSecure()) {
+            //notifyUser("Lock screen security not enabled in Settings");
+            return false;
+        }
+
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.USE_BIOMETRIC) !=
+                PackageManager.PERMISSION_GRANTED) {
+
+            //notifyUser("Fingerprint authentication permission not enabled");
+            return false;
+        }
+
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT))
+        {
+            return true;
+        }
+
+        return true;
+    }
+    // Callback da autenticação
+    private BiometricPrompt.AuthenticationCallback getAuthenticationCallback()
+    {
+        return new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode, CharSequence errString) {
+                //notifyUser("Authentication error: " + errString);
+                super.onAuthenticationError(errorCode, errString);
+            }
+
+            @Override
+            public void onAuthenticationHelp(int helpCode,
+                                             CharSequence helpString) {
+                super.onAuthenticationHelp(helpCode, helpString);
+            }
+
+            @Override
+            public void onAuthenticationFailed()
+            {
+                super.onAuthenticationFailed();
+                Toast.makeText(getApplicationContext(),"Falhou", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result)
+            {
+                //notifyUser("Authentication Succeeded");
+                super.onAuthenticationSucceeded(result);
+                Toast.makeText(getApplicationContext(),"Autenticação feita", Toast.LENGTH_LONG).show();
+
+            }
+        };
+    }
+    private CancellationSignal cancellationSignal;
+
+    private CancellationSignal getCancellationSignal()
+    {
+
+        cancellationSignal = new CancellationSignal();
+        cancellationSignal.setOnCancelListener(new CancellationSignal.OnCancelListener()
+        {
+            @Override
+            public void onCancel()
+            {
+                //notifyUser("Cancelled via signal");
+            }
+        });
+        return cancellationSignal;
+    }
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    public void authenticateUser()
+    {
+
+        BiometricPrompt biometricPrompt = new BiometricPrompt.Builder(this).setTitle("Biometric Demo").setSubtitle("Authentication is required to continue").setDescription("This app uses biometric authentication to protect your data.").setNegativeButton("Cancel", this.getMainExecutor(), new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i)
+            {
+                // notifyUser("Authentication cancelled");
+            }
+        }).build();
+        biometricPrompt.authenticate(getCancellationSignal(),getMainExecutor(),getAuthenticationCallback());
+    }
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    public void authenticateUser(View view) {
+        // Chama o prompt da autenticação
+        authenticateUser();
+
+        BiometricPrompt biometricPrompt = new BiometricPrompt.Builder(this).setTitle("Biometric Demo").setSubtitle("Authentication is required to continue").setDescription("This app uses biometric authentication to protect your data.").setNegativeButton("Cancel", this.getMainExecutor(), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // notifyUser("Authentication cancelled");
+            }
+        }).build();
+        biometricPrompt.authenticate(getCancellationSignal(), getMainExecutor(), getAuthenticationCallback());
+    }
+
+
     public void login(final String user_email, final String user_password) {
         if (user_email == "") {
             Toast.makeText(getApplicationContext(),
@@ -67,7 +182,7 @@ public class Login extends AppCompatActivity {
         }
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://192.168.1.80:3000/applogin";
+        String url = "http://192.168.1.118:3000/applogin";
         StringRequest sr = new StringRequest(Request.Method.POST,url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
