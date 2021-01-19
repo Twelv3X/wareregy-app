@@ -6,15 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -37,28 +36,45 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Scanner extends AppCompatActivity {
     CodeScanner codeScanner;
     CodeScannerView scannView;
-    TextView resultData;
+    TextView timer;
     Utilizador user = SharedPrefManager.getInstance(this).getUser();
     Context ctx;
+    TextView multiplicador;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
         scannView = findViewById(R.id.scannerView);
+        multiplicador = findViewById(R.id.multiplicador2);
+        Intent intent = getIntent();
+        long value = Long.parseLong(intent.getStringExtra("timervalue"));
+        String multi = intent.getStringExtra("multiplicador");
+        multiplicador.setText(multi);
         codeScanner = new CodeScanner(this, scannView);
-        resultData = findViewById(R.id.resultsOfQr);
+        timer = findViewById(R.id.timer2);
+
+        new CountDownTimer(value*1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                timer.setText(millisUntilFinished / 1000 + "s");
+            }
+
+            public void onFinish() {
+                timer.setText("0s");
+                multiplicador.setText("1.0");
+            }
+        }.start();
+
         codeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
             public void onDecoded(@NonNull Result result) {
@@ -94,9 +110,6 @@ public class Scanner extends AppCompatActivity {
                         LocalDateTime tempo = LocalDateTime.now();
                         long segundos = Duration.between(tempo.withSecond(0).withMinute(0).withHour(0), tempo).getSeconds();
 
-
-                        resultData.setText(result.getText());
-
                         Registo registo = new Registo();
                         registo.setUserId(user.getId());
                         registo.setProdutoId(id);
@@ -106,6 +119,7 @@ public class Scanner extends AppCompatActivity {
                         registo.setRegistoHora(Math.toIntExact(segundos));
 
                         Log.d("QR",registo.toJSON());
+
                         enviarRegisto(registo);
                     }
                 });
@@ -164,11 +178,15 @@ public class Scanner extends AppCompatActivity {
                     user.setNivel(obj.getInt("nivel"));
                     user.setMinXp(obj.getInt("min_xp"));
                     user.setMaxXp(obj.getInt("max_xp"));
+                    user.setNrReg(obj.getInt("nRegistos"));
                     Log.d("Res", user.toString());
                     SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
 
+                    incrementarMultiplicador();
+                    Intent intent = new Intent();
+                    intent.putExtra("multiplicador", multiplicador.getText().toString());
+                    setResult(RESULT_OK, intent);
                     finish();
-                    startActivity(new Intent(getApplicationContext(), Menu.class));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -189,7 +207,7 @@ public class Scanner extends AppCompatActivity {
                 params.put("produto_id", String.valueOf(registo.getProdutoId()));
                 params.put("registo_data", registo.getRegistoData());
                 params.put("registo_hora", String.valueOf(registo.getRegistoHora()));
-                params.put("exp", String.valueOf(calcularExp(registo.getProdutoPeso())));
+                params.put("exp", String.valueOf((int)calcularExp(registo.getProdutoPeso(), user.getNrReg())));
                 return params;
             }
 
@@ -203,8 +221,23 @@ public class Scanner extends AppCompatActivity {
         queue.add(sr);
     }
 
-    public int calcularExp(Double peso){
+    private static double arredondar (double valor, int casas) {
+        int tamanho = (int) Math.pow(10, casas);
+        return (double) Math.round(valor * tamanho) / tamanho;
+    }
+
+    public void incrementarMultiplicador (){
+        double mult = Double.parseDouble(multiplicador.getText().toString());
+
+            mult += 0.1;
+            multiplicador.setText(String.valueOf(arredondar(mult,1)));
+
+    }
+
+    public double calcularExp(Double peso, int nRegistos){
+        double mult = Double.parseDouble(multiplicador.getText().toString());
         int exp = 0;
+
         if (peso <=5){
             exp = 10;
         }else if (peso <=15){
@@ -212,7 +245,16 @@ public class Scanner extends AppCompatActivity {
         }else if (peso >15){
             exp = 30;
         }
-        return exp;
+
+        if (nRegistos >= 650){
+            mult+=1.0;
+        }
+
+        return exp*mult;
+    }
+
+    public int getTempo(){
+        return Integer.parseInt(timer.getText().toString().replace("s",""));
     }
 
 }

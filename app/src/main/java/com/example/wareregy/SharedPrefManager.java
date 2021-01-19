@@ -14,7 +14,7 @@ public class SharedPrefManager {
     private static final String KEY_NIVEL = "keynivel";
     private static final String KEY_MINXP = "keyminxp";
     private static final String KEY_MAXXP = "keymaxxp";
-    private static boolean KEY_TESTE = false;
+    private static final String KEY_NRREG = "nreg";
 
 
     private static SharedPrefManager mInstance;
@@ -42,6 +42,7 @@ public class SharedPrefManager {
         editor.putInt(KEY_NIVEL, user.getNivel());
         editor.putInt(KEY_MINXP, user.getMinXp());
         editor.putInt(KEY_MAXXP, user.getMaxXp());
+        editor.putInt(KEY_NRREG, user.getNrReg());
         editor.apply();
     }
 
@@ -62,7 +63,8 @@ public class SharedPrefManager {
                 sharedPreferences.getInt(KEY_EXP, 0),
                 sharedPreferences.getInt(KEY_NIVEL, 0),
                 sharedPreferences.getInt(KEY_MINXP, 0),
-                sharedPreferences.getInt(KEY_MAXXP, 0)
+                sharedPreferences.getInt(KEY_MAXXP, 0),
+                sharedPreferences.getInt(KEY_NRREG, 0)
         );
     }
 
@@ -73,6 +75,5 @@ public class SharedPrefManager {
         editor.clear();
         editor.apply();
         ctx.startActivity(new Intent(ctx, Login.class));
-        KEY_TESTE = true;
     }
 }

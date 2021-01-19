@@ -83,7 +83,7 @@ public class Login extends AppCompatActivity {
         }
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://192.168.1.118:3000/applogin";
+        String url = "http://192.168.1.80:3000/applogin";
         StringRequest sr = new StringRequest(Request.Method.POST,url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -101,7 +101,8 @@ public class Login extends AppCompatActivity {
                            obj.getInt("exp"),
                            obj.getInt("nivel"),
                            obj.getInt("minxp"),
-                           obj.getInt("maxxp")
+                           obj.getInt("maxxp"),
+                           obj.getInt("nRegistos")
 
                    );
 

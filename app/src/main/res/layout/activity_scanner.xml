@@ -17,21 +17,34 @@
         app:frameCornersSize="50dp"
         app:frameSize="0.75"
         app:frameThickness="2dp"
-        app:maskColor="#77000000" />
+        app:maskColor="#77000000" >
+
+    </com.budiyev.android.codescanner.CodeScannerView>
 
     <TextView
-        android:id="@+id/resultsOfQr"
+        android:id="@+id/timer2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textColor="@android:color/holo_orange_light"
+        android:layout_marginTop="64dp"
+        android:text="30s"
+        android:textColor="@color/white"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/scannerView"
-        app:layout_constraintVertical_bias="0.837" />
+        app:layout_constraintTop_toTopOf="@+id/scannerView" />
+
+    <TextView
+        android:id="@+id/multiplicador2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="1.0x"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

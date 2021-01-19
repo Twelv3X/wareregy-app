@@ -15,7 +15,10 @@
         android:theme="@style/Theme.Wareregy"
         android:usesCleartextTraffic="true">
         <activity android:name=".Lockscreen"></activity>
-        <activity android:name=".Scanner"></activity>
+        <activity android:name=".Scanner"
+            android:label="Registar Produto"
+             />
+
         <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
