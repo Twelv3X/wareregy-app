@@ -16,7 +16,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wareregy"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Incidencias"
+        <activity android:name=".Estatisticas"
+            android:parentActivityName=".Menu">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.wareregy.Menu" />
+            </activity>
+        <activity
+            android:name=".Incidencias"
             android:parentActivityName=".Menu">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

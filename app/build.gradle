@@ -29,6 +29,10 @@ android {
     }
 }
 
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -59,5 +63,7 @@ dependencies {
 
     //Biometric
     implementation "androidx.biometric:biometric:1.0.1"
+
+    implementation 'com.github.PhilJay:MPAndroidChart:v2.2.4'
 
 }

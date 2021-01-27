@@ -106,6 +106,11 @@ public class Menu extends AppCompatActivity {
             startActivity(intent);
         }
 
+        public void launchEstatisticas (MenuItem item){
+            Intent intent = new Intent(this, Estatisticas.class);
+            startActivity(intent);
+        }
+
         public String getTempo(){
         return timer.getText().toString().replace("s","");
         }
