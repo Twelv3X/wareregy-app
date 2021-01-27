@@ -49,16 +49,17 @@ public class Scanner extends AppCompatActivity {
     Utilizador user = SharedPrefManager.getInstance(this).getUser();
     Context ctx;
     TextView multiplicador;
-
+    Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
         scannView = findViewById(R.id.scannerView);
         multiplicador = findViewById(R.id.multiplicador2);
-        Intent intent = getIntent();
+         intent = getIntent();
         long value = Long.parseLong(intent.getStringExtra("timervalue"));
         String multi = intent.getStringExtra("multiplicador");
+
         multiplicador.setText(multi);
         codeScanner = new CodeScanner(this, scannView);
         timer = findViewById(R.id.timer2);
@@ -120,7 +121,16 @@ public class Scanner extends AppCompatActivity {
 
                         Log.d("QR",registo.toJSON());
 
-                        enviarRegisto(registo);
+                        int contexto = Integer.parseInt(intent.getStringExtra("contexto"));
+                        Log.d("ctx", String.valueOf(contexto));
+                        if (contexto == 0){
+                            enviarRegisto(registo);
+                        }else{
+                            Intent intent = new Intent(getApplicationContext(), Incidencias.class);
+                            intent.putExtra("registo", registo.toJSON());
+                            startActivity(intent);
+                        }
+
                     }
                 });
 
@@ -228,9 +238,11 @@ public class Scanner extends AppCompatActivity {
 
     public void incrementarMultiplicador (){
         double mult = Double.parseDouble(multiplicador.getText().toString());
+            if(mult <=2.9){
+                mult += 0.1;
+                multiplicador.setText(String.valueOf(arredondar(mult,1)));
+            }
 
-            mult += 0.1;
-            multiplicador.setText(String.valueOf(arredondar(mult,1)));
 
     }
 

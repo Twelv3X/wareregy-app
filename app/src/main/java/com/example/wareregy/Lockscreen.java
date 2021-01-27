@@ -80,7 +80,7 @@ public class Lockscreen extends AppCompatActivity {
             {
                 //notifyUser("Authentication Succeeded");
                 super.onAuthenticationSucceeded(result);
-                Toast.makeText(getApplicationContext(),"Autenticação feita", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"Sucesso", Toast.LENGTH_LONG).show();
 
                 Intent intent = new Intent(Lockscreen.this, Menu.class);
                 Lockscreen.this.startActivity(intent);
@@ -107,7 +107,7 @@ public class Lockscreen extends AppCompatActivity {
     public void authenticateUser()
     {
 
-        BiometricPrompt biometricPrompt = new BiometricPrompt.Builder(this).setTitle("Biometric Demo").setSubtitle("Authentication is required to continue").setDescription("This app uses biometric authentication to protect your data.").setNegativeButton("Cancel", this.getMainExecutor(), new DialogInterface.OnClickListener()
+        BiometricPrompt biometricPrompt = new BiometricPrompt.Builder(this).setTitle("Impressão Digital requerida").setSubtitle("Coloque o seu dedo para continuar").setDescription("Esta aplicação usa uma autenticação biométrica para proteger os seus dados.").setNegativeButton("Cancelar", this.getMainExecutor(), new DialogInterface.OnClickListener()
         {
             @Override
             public void onClick(DialogInterface dialogInterface, int i)
@@ -122,7 +122,7 @@ public class Lockscreen extends AppCompatActivity {
         // Chama o prompt da autenticação
         authenticateUser();
 
-        BiometricPrompt biometricPrompt = new BiometricPrompt.Builder(this).setTitle("Biometric Demo").setSubtitle("Authentication is required to continue").setDescription("This app uses biometric authentication to protect your data.").setNegativeButton("Cancel", this.getMainExecutor(), new DialogInterface.OnClickListener() {
+        BiometricPrompt biometricPrompt = new BiometricPrompt.Builder(this).setTitle("Impressão Digital requerida").setSubtitle("Coloque o seu dedo para continuar").setDescription("Esta aplicação usa uma autenticação biométrica para proteger os seus dados.").setNegativeButton("Cancelar", this.getMainExecutor(), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 // notifyUser("Authentication cancelled");

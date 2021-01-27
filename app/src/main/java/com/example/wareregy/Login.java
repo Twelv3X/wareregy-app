@@ -106,7 +106,7 @@ public class Login extends AppCompatActivity {
 
                    );
 
-                   //storing the user in shared preferences
+
                    SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
                    finish();
                    startActivity(new Intent(getApplicationContext(), Menu.class));

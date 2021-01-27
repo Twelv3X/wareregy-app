@@ -26,6 +26,7 @@ public class Menu extends AppCompatActivity {
     private TextView exp;
     private TextView nivel;
     private Button scanBtn;
+    private Button scanBtn2;
     private ProgressBar pBar;
     private TextView timer;
     private ProgressBar objDiario;
@@ -68,6 +69,11 @@ public class Menu extends AppCompatActivity {
             mCountDownTimer.start();
             atualizarUser(user);
 
+            if(user.getPrimeiroLogin() == 0){
+                Intent intent = new Intent(Menu.this, PrimeiroLogin.class);
+                startActivity(intent);
+                finish();
+            }
 
         } else {
             Intent intent = new Intent(Menu.this, Login.class);
@@ -76,16 +82,23 @@ public class Menu extends AppCompatActivity {
         }
 
         timer = findViewById(R.id.timer);
-
-
-
         scanBtn = (Button)findViewById(R.id.scanBtn);
+        scanBtn2 = (Button)findViewById(R.id.scanBtn2);
+
         scanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openScanner();
+                openScanner(0);
             }
         });
+
+        scanBtn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openScanner(1);
+            }
+        });
+
     }
 
         public void launchRegistos (MenuItem item){
@@ -97,11 +110,12 @@ public class Menu extends AppCompatActivity {
         return timer.getText().toString().replace("s","");
         }
 
-    private void openScanner() {
+    private void openScanner(int contexto) {
         Intent intent = new Intent(this, Scanner.class);
         String tempo = getTempo();
         intent.putExtra("timervalue", tempo);
         intent.putExtra("multiplicador", multiplicador.getText().toString());
+        intent.putExtra("contexto", String.valueOf(contexto));
         startActivityForResult(intent,TEXT_REQUEST);
     }
 

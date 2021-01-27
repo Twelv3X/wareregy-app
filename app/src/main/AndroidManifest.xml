@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -14,11 +16,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Wareregy"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Lockscreen"></activity>
-        <activity android:name=".Scanner"
-            android:label="Registar Produto"
-             />
-
+        <activity android:name=".Incidencias"
+            android:parentActivityName=".Menu">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.wareregy.Menu" />
+        </activity>
+        <activity android:name=".PrimeiroLogin" />
+        <activity android:name=".Lockscreen" />
+        <activity
+            android:name=".Scanner"
+            android:label="Registar Produto" />
         <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
