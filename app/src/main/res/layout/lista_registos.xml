@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textViewNomeProduto"
+            android:layout_width="135dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:background="@drawable/table_content_cell_bg"
+            android:text="nome"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textViewProdutoPeso"
+            app:layout_constraintStart_toEndOf="@+id/textViewProdutoId"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewProdutoId"
+            android:layout_width="86dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="top"
+            android:background="@drawable/table_content_cell_bg"
+            android:text="1"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewProdutoPeso"
+            android:layout_width="86dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="top"
+            android:background="@drawable/table_content_cell_bg"
+            android:text="1"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/textViewRegistoHora"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewRegistoHora"
+            android:layout_width="86dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="top"
+            android:background="@drawable/table_content_cell_bg"
+            android:text="1"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
