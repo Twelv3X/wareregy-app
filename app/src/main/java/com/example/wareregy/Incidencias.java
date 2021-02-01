@@ -53,18 +53,19 @@ public class Incidencias extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incidencias);
-
+        //Buscar as informações do produto em que foi feito o scan
         Intent registo = getIntent();
         dadosRegisto = registo.getStringExtra("registo");
         Log.d("msg", dadosRegisto);
 
-
         Button btnCamera = (Button)findViewById(R.id.btnCamera);
         imageView = (ImageView)findViewById(R.id.imageView);
         comentario = findViewById(R.id.comentario);
-
         enviar = findViewById(R.id.enviar);
+
+        //Aqui é usado Retrofit em vez de Volley pois volley não supporta multipart requests
         initRetrofitClient();
+        //Abrir câmera
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,13 +74,13 @@ public class Incidencias extends AppCompatActivity {
             }
         });
 
+        //Enviar para a API a foto e o comentário
         enviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String cmtr = comentario.getText().toString();
                 if(bitmap != null && !cmtr.equals("")){
                     multipartImageUpload();
-
                     finish();
                     startActivity(new Intent(getApplicationContext(), Menu.class));
                 }else{
@@ -90,18 +91,17 @@ public class Incidencias extends AppCompatActivity {
         });
     }
 
+    //Guardar a foto numa variável bitmap e mostrar a fota na imageview
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         bitmap = (Bitmap)data.getExtras().get("data");
-
         imageView.setImageBitmap(bitmap);
 
     }
 
     private void initRetrofitClient() {
         OkHttpClient client = new OkHttpClient.Builder().build();
-
         apiService = new Retrofit.Builder().baseUrl("http://192.168.1.80:3000").client(client).build().create(ApiService.class);
     }
 
@@ -115,13 +115,12 @@ public class Incidencias extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
             byte[] bitmapdata = bos.toByteArray();
 
-
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(bitmapdata);
             fos.flush();
             fos.close();
 
-
+            //Retrofit request com a imagem, a informação do produto e o comentário
             RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
             RequestBody registo = RequestBody.create(MediaType.parse("text/plain"), dadosRegisto);
             RequestBody incidMsg = RequestBody.create(MediaType.parse("text/plain"), comentario.getText().toString());

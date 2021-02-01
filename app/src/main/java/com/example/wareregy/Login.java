@@ -47,6 +47,8 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        //Verifica se o utilizador já fez login por verificar se o utilizador já existe nos SharedPrefs
+        //Se sim então o ecrã do Lockscreen, onde pedirá a impressão digital é aberto.
         if (SharedPrefManager.getInstance(this).isLoggedIn()) {
 
             Intent intent = new Intent(Login.this, Lockscreen.class);
@@ -65,8 +67,6 @@ public class Login extends AppCompatActivity {
             }
         });
     }
-
-
 
 
     public void login(final String user_email, final String user_password) {
@@ -89,7 +89,8 @@ public class Login extends AppCompatActivity {
             public void onResponse(String response) {
 
                try {
-
+                   //A api devolve todas as informações guardadas na base de dados sobre o utilziador.
+                   //Aqui a resposta devolvida é passada para o objeto java Utilizador
                    JSONObject obj = new JSONObject(response);
                    Log.d("login", response.toString());
                    if (!response.contains("Login Falhou")){
@@ -106,7 +107,7 @@ public class Login extends AppCompatActivity {
 
                    );
 
-
+                   //O objeto Utiliazdor é passado para o SharedPrefs que guardará localmente as informações do utilizador.
                    SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
                    finish();
                    startActivity(new Intent(getApplicationContext(), Menu.class));
@@ -126,6 +127,7 @@ public class Login extends AppCompatActivity {
 
             }
         }){
+            //Parâmetros da Request (email+password)
             @Override
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();

@@ -34,6 +34,9 @@ public class Menu extends AppCompatActivity {
     private TextView regPercent;
     private TextView tRestante;
     private TextView multiplicador;
+    public static final int TEXT_REQUEST = 1;
+
+    //Temporizador
     CountDownTimer mCountDownTimer = new CountDownTimer(30000, 1000) {
 
         public void onTick(long millisUntilFinished) {
@@ -46,7 +49,6 @@ public class Menu extends AppCompatActivity {
         }
     };
 
-    public static final int TEXT_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +56,10 @@ public class Menu extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
         getSupportActionBar().setElevation(0);
 
+        //Verificar se o utilziador fez login
         if (SharedPrefManager.getInstance(this).isLoggedIn()) {
             Utilizador user = SharedPrefManager.getInstance(this).getUser();
+
             nome = findViewById(R.id.textNome);
             exp = findViewById(R.id.exp);
             nivel = findViewById(R.id.nivel);
@@ -67,8 +71,11 @@ public class Menu extends AppCompatActivity {
             tRestante = findViewById(R.id.tRestante);
             multiplicador = findViewById(R.id.multiplicador);
             mCountDownTimer.start();
+            //Atualizar as informações do menu (barra de experiência e outros valores)
             atualizarUser(user);
 
+            //Verifica se é a primeira vez que o utilizador está a fazer login
+            //Se sim é aberto o ecrã do primeiro login onde o utilizador poderá mudar de password
             if(user.getPrimeiroLogin() == 0){
                 Intent intent = new Intent(Menu.this, PrimeiroLogin.class);
                 startActivity(intent);
@@ -85,6 +92,9 @@ public class Menu extends AppCompatActivity {
         scanBtn = (Button)findViewById(R.id.scanBtn);
         scanBtn2 = (Button)findViewById(R.id.scanBtn2);
 
+        //Para não estar a criar 2 classes diferentes que fazem a mesma coisa, aqui reutiliza-se
+        //a classe que vai ler os códigos QR para o ecrã de registar incidência e registar produtos.
+        //Por isso para destinguir qual butão foi clicado é enviado um código de contexto.
         scanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,18 +121,20 @@ public class Menu extends AppCompatActivity {
             startActivity(intent);
         }
 
+        //Retorna o tempo do temporizador sem o "s"
         public String getTempo(){
         return timer.getText().toString().replace("s","");
         }
 
-    private void openScanner(int contexto) {
+        //Envia para o ecrâ do scanner de QR o tempo do temporizador e o valor do multiplicador na altura em que o botão foi clicado
+        private void openScanner(int contexto) {
         Intent intent = new Intent(this, Scanner.class);
         String tempo = getTempo();
         intent.putExtra("timervalue", tempo);
         intent.putExtra("multiplicador", multiplicador.getText().toString());
         intent.putExtra("contexto", String.valueOf(contexto));
         startActivityForResult(intent,TEXT_REQUEST);
-    }
+        }
 
     private void atualizarUser(Utilizador user){
         String expLabel = user.getExp() + "/" + user.getMaxXp();
@@ -141,6 +153,7 @@ public class Menu extends AppCompatActivity {
         regPercent.setText(String.valueOf((int)percent) + "%");
         objDiario.setProgress(user.getNrReg());
 
+        //Tempo restante até á meia noite
         ZoneId z = ZoneId.of( "Europe/Lisbon" );
         ZonedDateTime now = ZonedDateTime.now( z );
         LocalDate tomorrow = now.toLocalDate().plusDays(1);
@@ -172,18 +185,18 @@ public class Menu extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //Este método é iniciado sempre que um registo é efetuado.
     @Override
-    public void onActivityResult(int requestCode,
-                                 int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TEXT_REQUEST) {
             if (resultCode == RESULT_OK) {
-                String multi = data.getStringExtra("multiplicador");
-                multiplicador.setText(multi);
-                mCountDownTimer.cancel();
+                String multi = data.getStringExtra("multiplicador"); //Buscar valor do multiplicador de XP
+                multiplicador.setText(multi); //Atribuir o valor do multiplicador de XP
+                mCountDownTimer.cancel(); //Reiniciar o temporizador
                 mCountDownTimer.start();
                 Utilizador user = SharedPrefManager.getInstance(this).getUser();
-                atualizarUser(user);
+                atualizarUser(user); //Atualizar as informações do menu (barras de experiências/número de registos e outros valores)
             }
 
         }

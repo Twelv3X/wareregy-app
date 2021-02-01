@@ -56,11 +56,12 @@ public class Scanner extends AppCompatActivity {
         setContentView(R.layout.activity_scanner);
         scannView = findViewById(R.id.scannerView);
         multiplicador = findViewById(R.id.multiplicador2);
-         intent = getIntent();
+        //Buscar valor do multiplicador e o tempo do temporizador do screen anterior
+        intent = getIntent();
         long value = Long.parseLong(intent.getStringExtra("timervalue"));
         String multi = intent.getStringExtra("multiplicador");
-
         multiplicador.setText(multi);
+
         codeScanner = new CodeScanner(this, scannView);
         timer = findViewById(R.id.timer2);
 
@@ -111,6 +112,7 @@ public class Scanner extends AppCompatActivity {
                         LocalDateTime tempo = LocalDateTime.now();
                         long segundos = Duration.between(tempo.withSecond(0).withMinute(0).withHour(0), tempo).getSeconds();
 
+                        //Passar os dados do registo para um objeto que então será enviado como json para a API
                         Registo registo = new Registo();
                         registo.setUserId(user.getId());
                         registo.setProdutoId(id);
@@ -122,10 +124,11 @@ public class Scanner extends AppCompatActivity {
                         Log.d("QR",registo.toJSON());
 
                         int contexto = Integer.parseInt(intent.getStringExtra("contexto"));
-                        Log.d("ctx", String.valueOf(contexto));
+                        //Destinguir qual butão foi clicado para abrir este ecrã (registo de produto ou incidência)
                         if (contexto == 0){
                             enviarRegisto(registo);
                         }else{
+                            //Enviar para o ecrã das incidências as informações do produto e abrir o screen das incidências.
                             Intent intent = new Intent(getApplicationContext(), Incidencias.class);
                             intent.putExtra("registo", registo.toJSON());
                             startActivity(intent);
@@ -180,27 +183,30 @@ public class Scanner extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
             Log.d("Res", response);
+            //Se um registo for efetuado com sucesso, é enviado como resposta o nível do utlizador,
+            //a experiência necessária para subir de nível, e o número de registos que o utilizador já fez naquele dia
+
                 try {
                     JSONArray array = new JSONArray(response);
                     JSONObject obj = array.getJSONObject(0);
 
+                    //Atualizar os SharedPrefs com as novas informações
                     user.setExp(obj.getInt("user_xp"));
                     user.setNivel(obj.getInt("nivel"));
                     user.setMinXp(obj.getInt("min_xp"));
                     user.setMaxXp(obj.getInt("max_xp"));
                     user.setNrReg(obj.getInt("nRegistos"));
-                    Log.d("Res", user.toString());
                     SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
 
                     incrementarMultiplicador();
                     Intent intent = new Intent();
+                    //Enviar o valor do multiplicador para o MENU e mudar de ecrã para o MENU
                     intent.putExtra("multiplicador", multiplicador.getText().toString());
                     setResult(RESULT_OK, intent);
                     finish();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
 
 
@@ -210,6 +216,7 @@ public class Scanner extends AppCompatActivity {
 
             }
         }){
+            //Informação que é enviada para a API que envia para base de dados
             @Override
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
@@ -236,20 +243,21 @@ public class Scanner extends AppCompatActivity {
         return (double) Math.round(valor * tamanho) / tamanho;
     }
 
+    //Este método incrementa o multiplicador por 0.1 até a um máximo de 3.0
     public void incrementarMultiplicador (){
         double mult = Double.parseDouble(multiplicador.getText().toString());
             if(mult <=2.9){
                 mult += 0.1;
                 multiplicador.setText(String.valueOf(arredondar(mult,1)));
             }
-
-
     }
 
     public double calcularExp(Double peso, int nRegistos){
         double mult = Double.parseDouble(multiplicador.getText().toString());
         int exp = 0;
 
+        //Atribuir uma base de experiência ao registo
+        //A experiência ganha depende do peso do produto registado
         if (peso <=5){
             exp = 10;
         }else if (peso <=15){
@@ -258,6 +266,7 @@ public class Scanner extends AppCompatActivity {
             exp = 30;
         }
 
+        //Se o objetivo diário dos 650 produtos registados tiver completo então é adicionado +1 ao multiplicador
         if (nRegistos >= 650){
             mult+=1.0;
         }

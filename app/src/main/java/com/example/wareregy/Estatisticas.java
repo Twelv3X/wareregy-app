@@ -51,6 +51,9 @@ public class Estatisticas extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_estatisticas);
 
+        //Atribuição de uma variável ao datepicker
+        //onCLick: Abre o calendário
+        //onDateSet: Gurda numa variável a data e envia a data e o id do utilziador para o loadEstatisticas()
         mDisplayDate = (TextView) findViewById(R.id.tvDate2);
         mDisplayDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,15 +79,16 @@ public class Estatisticas extends AppCompatActivity {
 
                 month = month + 1;
                 String date = year + "-" + month + "-" + day;
-                mDisplayDate.setText(day + "/" + month + "/" + year);
-                SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
-                int user_id = user.getId();
+                mDisplayDate.setText(day + "/" + month + "/" + year); //Mostrar a data selecionada no ecrã
+                int user_id = user.getId(); // id do utilizador que fez o login
                 loadEstatisticas(user_id, date);
             }
         };
 
     }
 
+    //Este método faz uma request á API com o id do utilizador e a data como parâmetros.
+    //A API responde com os registos desse utilizador para essa data e é construido um gráfico de barras com os registos para cada hora desse dia.
     private void loadEstatisticas(int user_id, String registo_data) {
 
         String URL_REGISTOS = "http://192.168.1.80:3000/getestatisticas" ;
@@ -94,14 +98,15 @@ public class Estatisticas extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             Log.d("json", response);
-                            JSONArray array = new JSONArray(response);
+                            JSONArray array = new JSONArray(response); //Array com os registos devolvidos pela API
 
-                            BarChart barChart = (BarChart) findViewById(R.id.barchart);
+                            BarChart barChart = (BarChart) findViewById(R.id.barchart); //View do gráfico de barras
                             ArrayList<BarEntry> entries = new ArrayList<>();
-
                             BarDataSet bardataset = new BarDataSet(entries, "Número de Registos");
                             ArrayList<String> labels = new ArrayList<String>();
 
+                            //A API devolve a hora (x) e o número de registos efetuados nessa hora (y)
+                            //Este loop vai passar por todos os registos do array e atribuir o x(labels) e o y(entries) ao gráfiico.
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject registo = array.getJSONObject(i);
                                 entries.add(new BarEntry(registo.getInt("total"), i));
@@ -109,6 +114,7 @@ public class Estatisticas extends AppCompatActivity {
 
                             }
 
+                            //Customização do gráfico
                             BarData data = new BarData(labels, bardataset);
                             barChart.setData(data);
                             barChart.setDescription("");
@@ -139,7 +145,7 @@ public class Estatisticas extends AppCompatActivity {
                     }
 
                 }){
-
+            //Parâmetros da Request do Volley
             @Override
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
@@ -152,7 +158,6 @@ public class Estatisticas extends AppCompatActivity {
 
         };
 
-        //adding our stringrequest to queue
         Volley.newRequestQueue(this).add(stringRequest);
     }
 }

@@ -30,7 +30,7 @@ public class SharedPrefManager {
         return mInstance;
     }
 
-    //this method will store the user data in shared preferences
+    //Método que guarda as informações do utilizador localmente
     public void userLogin(Utilizador user) {
         SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -54,13 +54,13 @@ public class SharedPrefManager {
         editor.apply();
     }
 
-    //this method will checker whether user is already logged in or not
+    //Método que verifica se o utilizador tem o login efetuado
     public boolean isLoggedIn() {
         SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_USERNAME, null) != null;
     }
 
-    //this method will give the logged in user
+    //Este método retorna as informações do utilizador
     public Utilizador getUser() {
         SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return new Utilizador(
@@ -76,7 +76,7 @@ public class SharedPrefManager {
         );
     }
 
-    //this method will logout the user
+    //Logout por eliminar todas as informações guardadas.
     public void logout() {
         SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

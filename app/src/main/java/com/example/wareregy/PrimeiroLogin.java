@@ -50,9 +50,9 @@ public class PrimeiroLogin extends AppCompatActivity {
 
 
     public void mudarPassword(String password, String password2, int user_id) {
-        if(password.equals(password2)){
-            if(password.matches(".*\\d+.*")){
-                if(password.toString().length() > 8){
+        if(password.equals(password2)){ //Verificar se a password combina
+            if(password.matches(".*\\d+.*")){ //Verificar se a password contem um número
+                if(password.toString().length() > 8){ //Verificar se a password tem no mínimo 9 carateres.
 
                     RequestQueue queue = Volley.newRequestQueue(this);
                     String url = "http://192.168.1.80:3000/mudarpassword";

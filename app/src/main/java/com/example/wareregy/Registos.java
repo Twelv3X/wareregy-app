@@ -51,8 +51,10 @@ public class Registos extends AppCompatActivity {
 
         registoList = new ArrayList<>();
 
+        //Atribuição de uma variável ao datepicker
+        //onCLick: Abre o calendário
+        //onDateSet: Gurda numa variável a data e envia a data e o id do utilziador para o loadRegistos()
         mDisplayDate = (TextView) findViewById(R.id.tvDate);
-
         mDisplayDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,7 +87,8 @@ public class Registos extends AppCompatActivity {
         };
 
     }
-
+    //Este método faz uma request á API com o id do utilizador e a data como parâmetros.
+    //A API responde com os registos desse utilizador para essa data
     private void loadRegistos(int user_id, String registo_data) {
         registoList.clear();
         String URL_REGISTOS = "http://192.168.1.80:3000/registos" ;
@@ -95,14 +98,11 @@ public class Registos extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             Log.d("json", response);
-
-                            JSONArray array = new JSONArray(response);
+                            JSONArray array = new JSONArray(response); //Passar a resposta para array
 
                             for (int i = 0; i < array.length(); i++) {
-
-                                //getting product object from json array
                                 JSONObject registo = array.getJSONObject(i);
-                                //adding the product to product list
+                                //Passar o registo para um objeto e coloca-lo numa lista de objetos
                                 registoList.add(new Registo(
                                         registo.getInt("user_id"),
                                         registo.getInt("produto_id"),
@@ -111,9 +111,8 @@ public class Registos extends AppCompatActivity {
                                         registo.getString("registo_data"),
                                         registo.getInt("registo_hora")
                                 ));
-
                             }
-
+                            //Preencher a recycler view com os objetos na lista
                             RegistoAdapter adapter = new RegistoAdapter(Registos.this, registoList);
                             recyclerView.setAdapter(adapter);
                         } catch (JSONException e) {
@@ -130,6 +129,7 @@ public class Registos extends AppCompatActivity {
 
                 }){
 
+            //Parâmetros da Request do Volley
             @Override
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
@@ -143,7 +143,6 @@ public class Registos extends AppCompatActivity {
         }
         ;
 
-        //adding our stringrequest to queue
         Volley.newRequestQueue(this).add(stringRequest);
     }
 
